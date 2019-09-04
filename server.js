@@ -21,16 +21,6 @@ function logger(req, res, next) {
   next();
 };
 
-function validateUserID(req, res, next) {
-  console.log(req.body)
-  if (Object.keys(req.body).length === 0) {
-    res.status(400).json({message: "No user data"})
-  }
-  else {
-    next()
-  }
-}
-
 server.get('/', (req,res) => {
   res.status(200).json({api: 'up'});
 })
