@@ -11,10 +11,14 @@ server.get('/', (req, res) => {
 const userRouter = require('./users/userRouter')
 const postRouter = require('./posts/postRouter')
 
-
+server.use(express.json());
+server.use(logger);
+server.use('/users', userRouter);
+server.use('posts', postRouter);
 
 function logger(req, res, next) {
-  console.log(req.body);
+  console.log(`${new Date().toISOString()} There was a ${req.method} request made to ${req.url}`)
+  next();
 };
 
 function validateUserID(req, res, next) {
@@ -26,10 +30,6 @@ function validateUserID(req, res, next) {
     next()
   }
 }
-
-server.use(express.json());
-server.use('/users', logger, userRouter);
-server.use('posts', logger, postRouter);
 
 server.get('/', (req,res) => {
   res.status(200).json({api: 'up'});
