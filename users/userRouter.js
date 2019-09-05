@@ -138,8 +138,5 @@ function validateUserId(req, res, next) {
 
 };
 
-function validatePost(req, res, next) {
-
-};
 
 module.exports = router;
