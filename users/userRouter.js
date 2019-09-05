@@ -35,14 +35,32 @@ router.post('/:id/posts', validateUserId, validateUser, (req, res) => {
 });
 
 router.get('/', (req, res) => {
+    userDb
+    .get()
+    .then(users => res.status(200).json(users))
+    .catch((error) => {
+        console.log(error)
+        res.status(500).json({error: "could not retrieve users from the database"})
+    })
 
 });
 
-router.get('/:id', (req, res) => {
-
+router.get('/:id', validateUserId, (req, res) => {
+    res.status(200).json(req.user);
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
+    const {id} = req.params;
+    userDb
+    .getUserPosts(id)
+    .then(posts => {
+        console.log(posts)
+        res.status(200).json(posts)
+    })
+    .catch((error) => {
+        console.log(error);
+        res.status(500).json({error: "could not retrieve posts for the user"})
+    })
 
 });
 
