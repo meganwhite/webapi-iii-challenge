@@ -1,4 +1,6 @@
 const express = require('express');
+const userDb = require("./userDb.js")
+const postDb = require("../posts/postDb.js")
 
 const router = express.Router();
 
@@ -102,16 +104,37 @@ router.put('/:id', validateUser, (req, res) => {
 //custom middleware
 
 function validateUser(req, res, next) {
-    console.log(req.body)
-    if (Object.keys(req.body).length === 0) {
-      res.status(400).json({message: "missing user data"})
+    const {body} = req;
+    const bodyContent = Object.keys(body);
+    if (bodyContent.length === 0) {
+        console.log("body content in new user validate", bodyContent);
+        return res.status(400).json({message: "missing user data"})
     }
-    else {
-      next()
+    if (!body.name) {
+        return res.status(400).json({message: "missing required name field"})
     }
+    next()
 };
 
 function validateUserId(req, res, next) {
+    const {id} = req.params;
+
+    userDb
+    .getById(id)
+    .then(user => {
+        console.log("user in validate", user);
+        if(user) {
+            req.user = user;
+            console.log("user in req.user", req.user);
+            next()
+        }
+        else {
+            return res.status(400).json({message: "Invalid user ID"})
+        }
+    })
+    .catch((error) => {
+        console.log(error)
+    })
 
 };
 
