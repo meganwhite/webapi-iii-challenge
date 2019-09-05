@@ -2,11 +2,35 @@ const express = require('express');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-
+router.post('/', validateUser, (req, res) => {
+    const newUser = req.body;
+    userDb
+    .insert(newUser)
+    .then((response) => {
+        res.status(201).json(response)
+    })
+    .catch((error) => {
+        console.log(error);
+        res.status(500).json({message: "new user could not be created"})
+    })
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validateUserId, validateUser, (req, res) => {
+    const {id} = req.params;
+    let post = req.body;
+    post.user_id = id;
+    console.log("post", post);
+
+    postDb
+    .insert(post)
+    .then((response) => {
+        console.log(response)
+        res.status(201).json(response)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.status(500).json({message: "Post could not be added"})
+    })
 
 });
 
@@ -39,7 +63,7 @@ router.delete('/:id', validateUserId, (req, res) => {
 
 });
 
-router.put('/:id', validatedUserId, validateUser, (req, res) => {
+router.put('/:id', validateUser, (req, res) => {
     const {id} = req.params;
     const updatedUser = req.body;
 
