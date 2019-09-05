@@ -14,7 +14,7 @@ const postRouter = require('./posts/postRouter')
 server.use(express.json());
 server.use(logger);
 server.use('/users', userRouter);
-server.use('posts', postRouter);
+server.use('/posts', postRouter);
 
 function logger(req, res, next) {
   console.log(`${new Date().toISOString()} There was a ${req.method} request made to ${req.url}`)
